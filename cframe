@@ -1,0 +1,57 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local camera = game.Workspace.CurrentCamera
+
+-- Initial position and speed
+local position = Vector3.new(0, 3, -10)
+local speed = 1
+
+-- Create the part to represent the object
+local part = Instance.new("Part")
+part.Anchored = true
+part.Size = Vector3.new(2, 2, 2)
+part.Position = position
+part.Parent = game.Workspace
+
+-- Function to update the position based on input
+local function updatePosition()
+    local unitRay = camera:ScreenPointToRay(mouse.X, mouse.Y)
+    local newCFrame = CFrame.new(position, position + unitRay.Direction * speed)
+    part.CFrame = newCFrame
+end
+
+-- Function to toggle movement on "W" key press
+local function toggleMovement()
+    if mouse.Icon == "rbxasset://SystemCursors/Arrow" then
+        mouse.Icon = "rbxasset://SystemCursors/Cross"
+        mouse.KeyDown:Connect(function(key)
+            if key == "w" then
+                updatePosition()
+            end
+        end)
+    else
+        mouse.Icon = "rbxasset://SystemCursors/Arrow"
+        mouse.KeyDown:Disconnect()
+    end
+end
+
+-- Function to change keybind
+local function changeKeybind(newKey)
+    mouse.KeyDown:Disconnect()
+    mouse.Icon = "rbxasset://SystemCursors/Arrow"
+    mouse.KeyDown:Connect(function(key)
+        if key == newKey then
+            toggleMovement()
+        end
+    end)
+end
+
+-- Function to change speed
+local function changeSpeed(newSpeed)
+    speed = newSpeed
+end
+
+-- Example usage:
+toggleMovement() -- Start with movement toggled on
+changeKeybind("e") -- Change keybind to "E"
+changeSpeed(2) -- Change speed to 2
